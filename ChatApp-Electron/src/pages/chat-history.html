@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聊天记录</title>
+  <link rel="stylesheet" href="../styles/common.css">
+  <link rel="stylesheet" href="../styles/chat.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    .chat-history-page {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 1px solid #e5e5e5;
+      background: white;
+      flex-shrink: 0;
+    }
+
+    .history-header .close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background 0.2s;
+      margin-right: 15px;
+    }
+
+    .history-header .close-btn:hover {
+      background: #f5f5f5;
+    }
+
+    .history-header .title-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .history-header .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .history-header .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .history-header .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .history-header .subtitle {
+      font-size: 13px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .history-messages {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 20px;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-history-page">
+    <div class="history-header">
+      <button class="close-btn" onclick="closeWindow()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <div class="title-section">
+        <div class="avatar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <line x1="9" y1="10" x2="15" y2="10" stroke="white" stroke-width="2"/>
+            <line x1="9" y1="14" x2="13" y2="14" stroke="white" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="info">
+          <div class="title" id="history-title">聊天记录</div>
+          <div class="subtitle" id="history-subtitle">0 条消息</div>
+        </div>
+      </div>
+    </div>
+    <div class="history-messages" id="history-messages"></div>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const XssUtil = require('../scripts/xss-util');
+
+    // 接收聊天记录数据
+    ipcRenderer.on('load-chat-history', (event, historyData) => {
+      console.log('[Chat History] Received data:', historyData);
+      
+      document.getElementById('history-title').textContent = historyData.title || '聊天记录';
+      document.getElementById('history-subtitle').textContent = `${historyData.count || 0} 条聊天记录`;
+      
+      const messagesContainer = document.getElementById('history-messages');
+      messagesContainer.innerHTML = historyData.messages.map((m, index) => {
+        console.log(`[Chat History] Processing message ${index}:`, m);
+        
+        // 递归解析消息内容，支持嵌套转发
+        let contentHtml = '';
+        let messageClass = 'message-bubble received';
+        
+        // 处理嵌套的content字段，可能是字符串或已经是对象
+        let contentToParse = m.content;
+        if (typeof m.content === 'object') {
+          // 已经是对象，直接使用
+          contentToParse = JSON.stringify(m.content);
+        }
+        
+        try {
+          const parsed = JSON.parse(contentToParse);
+          console.log(`[Chat History] Parsed message ${index}:`, parsed);
+          
+          if (parsed.type === 'quote') {
+            // 引用消息
+            contentHtml = `
+              <div class="${messageClass}">
+                <div class="quote-reference" style="background: rgba(0, 0, 0, 0.05); border-left: 3px solid #0078d4; padding: 8px 12px; margin-bottom: 8px; border-radius: 4px;">
+                  <div style="font-size: 13px; color: #666;">${XssUtil.sanitize(parsed.quoteContent)}</div>
+                </div>
+                <div>${XssUtil.sanitize(parsed.content)}</div>
+              </div>
+            `;
+          } else if (parsed.type === 'chat_history') {
+            // 嵌套的聊天记录卡片
+            console.log('[Chat History] Rendering nested chat_history:', parsed);
+            
+            const nestedPreview = parsed.messages.slice(0, 2).map((nm, nmIndex) => {
+              console.log(`[Chat History] Nested message ${nmIndex}:`, nm);
+              let nestedContent = nm.content;
+              
+              // 处理嵌套消息的content
+              if (typeof nm.content === 'string') {
+                try {
+                  const nestedParsed = JSON.parse(nm.content);
+                  if (nestedParsed.type === 'quote') {
+                    nestedContent = `[引用] ${nestedParsed.content}`;
+                  } else if (nestedParsed.type === 'chat_history') {
+                    nestedContent = `[聊天记录] ${nestedParsed.count}条消息`;
+                  } else if (nestedParsed.mediaType === 'image') {
+                    nestedContent = `[图片] ${nestedParsed.name || '图片文件'}`;
+                  } else if (nestedParsed.mediaType === 'video') {
+                    nestedContent = `[视频] ${nestedParsed.name || '视频文件'}`;
+                  } else if (nestedParsed.mediaType === 'file' || nestedParsed.fileId) {
+                    nestedContent = `[文件] ${nestedParsed.name || '文件'}`;
+                  }
+                } catch (e) {
+                  console.log(`[Chat History] Nested message ${nmIndex} is plain text`);
+                }
+              }
+              
+              return `${XssUtil.sanitize(nm.sender)}: ${XssUtil.sanitize(nestedContent)}`;
+            }).join('<br>');
+            
+            // 将嵌套数据存储为 JSON 字符串，避免 HTML 属性问题
+            const nestedDataId = 'nested-' + Math.random().toString(36).substr(2, 9);
+            window[nestedDataId] = parsed;
+            console.log(`[Chat History] Stored nested data with id: ${nestedDataId}`);
+            
+            contentHtml = `
+              <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 12px; width: 200px; color: white; cursor: pointer; transition: transform 0.2s;"
+                   onmouseover="this.style.transform='translateY(-2px)'"
+                   onmouseout="this.style.transform='translateY(0)'"
+                   onclick="openNestedHistory('${nestedDataId}')">
+                <div style="font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    <line x1="9" y1="10" x2="15" y2="10"/>
+                    <line x1="9" y1="14" x2="13" y2="14"/>
+                  </svg>
+                  ${XssUtil.sanitize(parsed.title)}
+                </div>
+                <div style="font-size: 12px; opacity: 0.9; line-height: 1.5;">${nestedPreview}</div>
+                <div style="margin-top: 8px; font-size: 11px; opacity: 0.8;">点击查看 ${parsed.count} 条消息</div>
+              </div>
+            `;
+          } else if (parsed.mediaType === 'image') {
+            // 图片消息
+            contentHtml = `
+              <div class="${messageClass} image-message" style="padding: 4px; cursor: pointer;" onclick="openImage('${parsed.url}')">
+                <img src="${parsed.url}" alt="${XssUtil.sanitize(parsed.name || '图片')}" 
+                     style="max-width: 200px; max-height: 200px; border-radius: 8px;" 
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🖼️%3C/text%3E%3C/svg%3E'">
+              </div>
+            `;
+          } else if (parsed.mediaType === 'video') {
+            // 视频消息
+            contentHtml = `
+              <div class="${messageClass} video-message" style="padding: 8px; cursor: pointer;" onclick="openVideo('${parsed.url}')">
+                <div style="background: linear-gradient(135deg, #333 0%, #666 100%); border-radius: 8px; padding: 20px; width: 180px; text-align: center;">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="white" style="margin-bottom: 8px;">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  <div style="color: white; font-size: 13px;">${XssUtil.sanitize(parsed.name || '视频文件')}</div>
+                </div>
+              </div>
+            `;
+          } else if (parsed.mediaType === 'file' || parsed.fileId) {
+            // 文件消息
+            const fileSize = parsed.size ? formatFileSize(parsed.size) : '';
+            contentHtml = `
+              <div class="${messageClass} file-message" style="padding: 8px;">
+                <a href="${parsed.url}" download="${XssUtil.sanitize(parsed.name || '文件')}" 
+                   style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; background: #f5f5f5; padding: 12px; border-radius: 8px;">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                    <polyline points="13 2 13 9 20 9"/>
+                  </svg>
+                  <div>
+                    <div style="font-weight: 500; color: #333;">${XssUtil.sanitize(parsed.name || '文件')}</div>
+                    <div style="font-size: 12px; color: #999;">${fileSize}</div>
+                  </div>
+                </a>
+              </div>
+            `;
+          } else {
+            // 其他 JSON 消息
+            contentHtml = `<div class="${messageClass}">${XssUtil.sanitize(contentToParse)}</div>`;
+          }
+        } catch (e) {
+          // 普通文本消息
+          console.log(`[Chat History] Message ${index} is plain text:`, e.message);
+          contentHtml = `<div class="${messageClass}">${XssUtil.sanitize(contentToParse)}</div>`;
+        }
+        
+        return `
+          <div class="message-group received">
+            <div class="avatar avatar-small">${XssUtil.sanitize(m.sender.charAt(0).toUpperCase())}</div>
+            <div class="message-content">
+              <div class="message-sender">${XssUtil.sanitize(m.sender)}</div>
+              <div class="message-time">${m.time || ''}</div>
+              ${contentHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+
+    // 关闭窗口
+    function closeWindow() {
+      window.close();
+    }
+
+    // 格式化文件大小
+    function formatFileSize(bytes) {
+      if (!bytes) return '';
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    // 打开图片
+    function openImage(url) {
+      ipcRenderer.send('open-media-viewer', { url, type: 'image', filename: '' });
+    }
+
+    // 打开视频
+    function openVideo(url) {
+      ipcRenderer.send('open-media-viewer', { url, type: 'video', filename: '' });
+    }
+
+    // 打开嵌套的聊天记录
+    function openNestedHistory(dataId) {
+      console.log('[Chat History] openNestedHistory called with dataId:', dataId);
+      const nestedData = window[dataId];
+      console.log('[Chat History] Retrieved nested data:', nestedData);
+      
+      if (nestedData) {
+        console.log('[Chat History] Opening nested history with data:', {
+          title: nestedData.title,
+          count: nestedData.count,
+          messages: nestedData.messages
+        });
+        ipcRenderer.send('open-chat-history', nestedData);
+      } else {
+        console.error('[Chat History] No data found for id:', dataId);
+        console.error('[Chat History] Available keys:', Object.keys(window).filter(k => k.startsWith('nested-')));
+      }
+    }
+  </script>
+</body>
+</html>

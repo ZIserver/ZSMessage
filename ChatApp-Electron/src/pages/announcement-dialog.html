@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统公告</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 背景动画粒子 - 已移除 */
+
+        /* 公告容器 */
+        .announcement-container {
+            background: white;
+            border-radius: 24px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 顶部装饰条 */
+        .top-decoration {
+            height: 8px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #667eea);
+            background-size: 300% 100%;
+            animation: gradient 3s ease infinite;
+        }
+
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* 图标区域 */
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            padding: 40px 0 20px;
+            position: relative;
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            }
+        }
+
+        .icon-wrapper::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            animation: ripple 2s ease-out infinite;
+        }
+
+        @keyframes ripple {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .icon {
+            font-size: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 0 40px 20px;
+            text-align: center;
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .type-notice {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .type-important {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .type-maintenance {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .message {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            min-height: 60px;
+            max-height: 250px;
+        }
+
+        .message::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .message::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .message::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .message::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        /* 按钮区域 */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            padding: 20px 40px 30px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #f5f7fa;
+            color: #606266;
+            border: 2px solid #e4e7ed;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 关闭按钮 */
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #666;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        /* 底部提示 */
+        .footer-tip {
+            padding: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            flex-shrink: 0;
+            border-radius: 0 0 24px 24px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景粒子已移除 -->
+
+    <div class="announcement-container">
+        <div class="top-decoration"></div>
+        
+        <button class="close-btn" onclick="closeWindow()">×</button>
+        
+        <div class="icon-container">
+            <div class="icon-wrapper">
+                <div class="icon" id="announcement-icon">📢</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <span class="type-badge" id="type-badge">通知</span>
+            <h1 class="title" id="announcement-title">加载中...</h1>
+            <div class="message" id="announcement-content">正在加载公告内容...</div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-secondary" onclick="closeWindow()">
+                <span>✓ 我知道了</span>
+            </button>
+            <button class="btn btn-primary" onclick="viewMore()">
+                <span>📋 查看更多</span>
+            </button>
+        </div>
+
+        <div class="footer-tip">
+            💡 点击"我知道了"后，此公告将在3天内不再提醒
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        // 获取公告数据
+        const announcementData = ipcRenderer.sendSync('get-announcement-data');
+
+        if (announcementData) {
+            // 设置图标
+            const icons = {
+                'notice': '📢',
+                'important': '⚠️',
+                'maintenance': '🔧'
+            };
+            document.getElementById('announcement-icon').textContent = icons[announcementData.type] || '📢';
+
+            // 设置类型徽章
+            const typeNames = {
+                'notice': '通知',
+                'important': '重要公告',
+                'maintenance': '维护公告'
+            };
+            const badge = document.getElementById('type-badge');
+            badge.textContent = typeNames[announcementData.type] || '通知';
+            badge.className = 'type-badge type-' + announcementData.type;
+
+            // 设置标题和内容（支持 HTML）
+            document.getElementById('announcement-title').textContent = announcementData.title;
+            document.getElementById('announcement-content').innerHTML = announcementData.content;
+        }
+
+        function closeWindow() {
+            ipcRenderer.send('announcement-dialog-response', 'ok');
+        }
+
+        function viewMore() {
+            ipcRenderer.send('announcement-dialog-response', 'more');
+        }
+
+        // 监听键盘事件
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeWindow();
+            } else if (e.key === 'Enter') {
+                viewMore();
+            }
+        });
+    </script>
+</body>
+</html>

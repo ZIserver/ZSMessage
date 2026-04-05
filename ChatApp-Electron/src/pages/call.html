@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://msg.v2.zhsdev.top wss://msg.v2.zhsdev.top https://stun.l.google.com:19302; media-src 'self' blob:">
+  <title>通话 - 智穗语聊</title>
+  <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../styles/common.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 视频容器 */
+    .video-container {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+
+    /* 远程视频（大） */
+    .remote-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #1a1a2e;
+    }
+
+    /* 本地视频（小） */
+    .local-video-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 200px;
+      height: 150px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      cursor: move;
+      z-index: 10;
+      transition: transform 0.2s ease;
+    }
+
+    .local-video-container:hover {
+      transform: scale(1.05);
+    }
+
+    .local-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #2a2a4e;
+      transform: scaleX(-1); /* 镜像 */
+    }
+
+    /* 语音通话模式 */
+    .audio-only-mode .video-container {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .audio-only-avatar {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .audio-only-mode .audio-only-avatar {
+      display: flex;
+    }
+
+    .audio-only-mode .remote-video,
+    .audio-only-mode .local-video-container {
+      display: none;
+    }
+
+    .avatar-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 64px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 20px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.5); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+    }
+
+    .callee-name {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .call-status {
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .call-duration {
+      font-size: 18px;
+      font-weight: 500;
+      margin-top: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 来电界面 */
+    .incoming-call-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .incoming-call-overlay.hidden {
+      display: none;
+    }
+
+    .incoming-title {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 30px;
+    }
+
+    .incoming-actions {
+      display: flex;
+      gap: 60px;
+      margin-top: 40px;
+    }
+
+    .incoming-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .incoming-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .incoming-btn.accept {
+      background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+    }
+
+    .incoming-btn.reject {
+      background: linear-gradient(135deg, #ff1744 0%, #ff5252 100%);
+    }
+
+    .incoming-btn i {
+      font-size: 32px;
+      color: #fff;
+    }
+
+    /* 控制栏 */
+    .controls-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      z-index: 20;
+    }
+
+    .control-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .control-btn i {
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .control-btn.active {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .control-btn.active i {
+      color: #333;
+    }
+
+    .control-btn.hangup {
+      background: linear-gradient(135deg, #ff1744 0%, #ff5252 100%);
+      width: 64px;
+      height: 64px;
+    }
+
+    .control-btn.hangup:hover {
+      background: linear-gradient(135deg, #ff5252 0%, #ff1744 100%);
+    }
+
+    /* 状态指示器 */
+    .status-indicator {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      z-index: 20;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4caf50;
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .status-dot.connecting {
+      background: #ffc107;
+    }
+
+    .status-dot.disconnected {
+      background: #f44336;
+      animation: none;
+    }
+
+    .status-text {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* 隐藏类 */
+    .hidden {
+      display: none !important;
+    }
+
+    /* 窗口拖动区域 */
+    .drag-region {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      -webkit-app-region: drag;
+      z-index: 1000;
+    }
+
+    /* 网络质量指示器 */
+    .network-quality {
+      position: absolute;
+      top: 20px;
+      right: 240px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 16px;
+      z-index: 20;
+    }
+
+    .quality-bar {
+      width: 4px;
+      height: 12px;
+      background: #4caf50;
+      border-radius: 2px;
+    }
+
+    .quality-bar:nth-child(1) { height: 6px; }
+    .quality-bar:nth-child(2) { height: 9px; }
+    .quality-bar:nth-child(3) { height: 12px; }
+    .quality-bar:nth-child(4) { height: 15px; }
+
+    .quality-bar.inactive {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <!-- 窗口拖动区域 -->
+  <div class="drag-region"></div>
+
+  <!-- 视频容器 -->
+  <div class="video-container">
+    <!-- 远程视频 -->
+    <video id="remote-video" class="remote-video" autoplay playsinline></video>
+    
+    <!-- 本地视频 -->
+    <div class="local-video-container" id="local-video-container">
+      <video id="local-video" class="local-video" autoplay playsinline muted></video>
+    </div>
+
+    <!-- 语音通话时显示头像 -->
+    <div class="audio-only-avatar">
+      <div class="avatar-circle" id="callee-avatar">?</div>
+      <div class="callee-name" id="callee-name">用户</div>
+      <div class="call-status" id="call-status-text">正在呼叫...</div>
+      <div class="call-duration hidden" id="call-duration">00:00</div>
+    </div>
+
+    <!-- 状态指示器 -->
+    <div class="status-indicator">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-text" id="status-text">连接中</span>
+    </div>
+
+    <!-- 网络质量 -->
+    <div class="network-quality" id="network-quality">
+      <div class="quality-bar"></div>
+      <div class="quality-bar"></div>
+      <div class="quality-bar"></div>
+      <div class="quality-bar inactive"></div>
+    </div>
+
+    <!-- 来电界面 -->
+    <div class="incoming-call-overlay hidden" id="incoming-overlay">
+      <div class="incoming-title" id="incoming-title">语音来电</div>
+      <div class="avatar-circle" id="incoming-avatar">?</div>
+      <div class="callee-name" id="incoming-name">用户</div>
+      <div class="incoming-actions">
+        <button class="incoming-btn reject" id="reject-btn" title="拒绝">
+          <i class="fas fa-phone-slash"></i>
+        </button>
+        <button class="incoming-btn accept" id="accept-btn" title="接听">
+          <i class="fas fa-phone"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 控制栏 -->
+    <div class="controls-bar" id="controls-bar">
+      <button class="control-btn" id="mute-btn" title="静音">
+        <i class="fas fa-microphone" id="mute-icon"></i>
+        <i class="fas fa-microphone-slash hidden" id="mute-icon-off"></i>
+      </button>
+      <button class="control-btn" id="video-btn" title="摄像头">
+        <i class="fas fa-video" id="video-icon"></i>
+        <i class="fas fa-video-slash hidden" id="video-icon-off"></i>
+      </button>
+      <button class="control-btn hangup" id="hangup-btn" title="挂断">
+        <i class="fas fa-phone-slash"></i>
+      </button>
+      <button class="control-btn" id="speaker-btn" title="扬声器">
+        <i class="fas fa-volume-up"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="../scripts/call.js"></script>
+</body>
+</html>

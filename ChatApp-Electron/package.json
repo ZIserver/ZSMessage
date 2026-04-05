@@ -1,0 +1,108 @@
+{
+  "name": "ZSmessage",
+  "version": "1.4.0",
+  "description": "智穗语聊",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
+  },
+  "keywords": [
+    "chat",
+    "electron",
+    "desktop"
+  ],
+  "author": "智穗科技",
+  "license": "MIT",
+  "build": {
+    "appId": "com.zsmessage.electron",
+    "productName": "智穗语聊",
+    "copyright": "Copyright © 2026 智穗科技. All rights reserved.",
+    "npmRebuild": false,
+    "icon": "icon.ico",
+    "asar": true,
+    "asarUnpack": [
+      "**\\node_modules\\**",
+      "**/node_modules/**"
+    ],
+    "extraMetadata": {
+      "name": "ZSmessage",
+      "author": "智穗科技",
+      "companyName": "智穗科技",
+      "copyright": "Copyright © 2026 智穗科技. All rights reserved.",
+      "description": "智穗语聊 Desktop Client",
+      "productName": "智穗语聊"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "src/**/*",
+      "package.json",
+      "icon.ico"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico",
+      "requestedExecutionLevel": "asInvoker",
+      "executableName": "zsmessage",
+      "artifactName": "智穗语聊 Setup ${version}.exe",
+      "verifyUpdateCodeSignature": false,
+      "signAndEditExecutable": true,
+      "fileAssociations": [
+        {
+          "ext": "msg",
+          "name": "ZSmessage Message",
+          "description": "智穗语聊消息文件",
+          "icon": "icon.ico"
+        }
+      ],
+      "legalTrademarks": "智穗语聊",
+      "compression": "normal",
+      "extraResources": [],
+      "protocols": [
+        {
+          "name": "ZSmessage Protocol",
+          "schemes": ["zsmessage"]
+        }
+      ],
+      "forceCodeSigning": false,
+      "cscLink": null,
+      "cscKeyPassword": null
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "智穗语聊",
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": {
+      "provider": "generic",
+      "url": "https://你的API地址/updates/"
+    },
+    "releaseInfo": {
+      "releaseNotes": "智穗语聊桌面客户端"
+    }
+  },
+  "publisherName": "智穗科技",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.1.0",
+    "axios": "^1.6.2",
+    "electron-log": "^5.4.3",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.6.2",
+    "iconv-lite": "^0.7.2",
+    "qrcode": "^1.5.4",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3"
+  }
+}

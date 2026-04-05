@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>通知</title>
+  <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../styles/common.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .notifications-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .tabs {
+      display: flex;
+      background: white;
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      background: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      color: #666;
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab:hover {
+      background: #f5f5f5;
+    }
+
+    .tab.active {
+      color: var(--primary-color, #0078D4);
+      border-bottom-color: var(--primary-color, #0078D4);
+      font-weight: 500;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .notification-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .notification-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 3px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .notification-item:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .notification-item.unread {
+      background: #e6f7ff;
+      border-left-color: var(--primary-color, #0078D4);
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .notification-user {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .notification-time {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .notification-message {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: var(--primary-color, #0078D4);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover, #005a9e);
+    }
+
+    .btn-secondary {
+      background: #f5f5f5;
+      color: #666;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
+
+    .empty-state i {
+      font-size: 60px;
+      margin-bottom: 15px;
+      opacity: 0.5;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="notifications-container">
+    <div class="tabs">
+      <button class="tab active" data-tab="friend">好友通知</button>
+      <button class="tab" data-tab="group">群聊通知</button>
+    </div>
+
+    <div class="tab-content active" id="friend-tab">
+      <div class="notification-list" id="friend-notifications">
+        <!-- 好友通知列表 -->
+      </div>
+    </div>
+
+    <div class="tab-content" id="group-tab">
+      <div class="notification-list" id="group-notifications">
+        <!-- 群聊通知列表 -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const API_BASE_URL = localStorage.getItem('apiBaseUrl') || 'http://localhost:8080';
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+    // 标签切换
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        tab.classList.add('active');
+        const tabId = tab.dataset.tab + '-tab';
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+
+    // 加载好友通知
+    async function loadFriendNotifications() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/friends/notifications/${currentUser.id}`);
+        const notifications = await response.json();
+        
+        const container = document.getElementById('friend-notifications');
+        
+        if (notifications.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="far fa-user"></i>
+              <p>暂无好友通知</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = notifications.map(notif => {
+          const timeStr = new Date(notif.createdAt).toLocaleString('zh-CN');
+          const unreadClass = notif.isRead ? '' : 'unread';
+          
+          let actionsHtml = '';
+          if (notif.notificationType === 'FRIEND_REQUEST' && notif.status === 'PENDING') {
+            actionsHtml = `
+              <div class="notification-actions">
+                <button class="btn btn-primary" onclick="respondToFriendRequest(${notif.id}, true)">接受</button>
+                <button class="btn btn-secondary" onclick="respondToFriendRequest(${notif.id}, false)">拒绝</button>
+              </div>
+            `;
+          }
+          
+          return `
+            <div class="notification-item ${unreadClass}">
+              <div class="notification-header">
+                <span class="notification-user">用户 #${notif.fromUserId}</span>
+                <span class="notification-time">${timeStr}</span>
+              </div>
+              <div class="notification-message">${notif.message}</div>
+              ${actionsHtml}
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('加载好友通知失败:', error);
+      }
+    }
+
+    // 加载群聊通知
+    async function loadGroupNotifications() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/groups/notifications/${currentUser.id}`);
+        const notifications = await response.json();
+        
+        const container = document.getElementById('group-notifications');
+        
+        if (notifications.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="far fa-users"></i>
+              <p>暂无群聊通知</p>
+            </div>
+          `;
+          return;
+        }
+        
+        container.innerHTML = notifications.map(notif => {
+          const timeStr = new Date(notif.createdAt).toLocaleString('zh-CN');
+          const unreadClass = notif.isRead ? '' : 'unread';
+          
+          let actionsHtml = '';
+          if (notif.notificationType === 'JOIN_REQUEST' && !notif.isRead) {
+            actionsHtml = `
+              <div class="notification-actions">
+                <button class="btn btn-primary" onclick="respondToGroupRequest(${notif.id}, true)">同意</button>
+                <button class="btn btn-secondary" onclick="respondToGroupRequest(${notif.id}, false)">拒绝</button>
+              </div>
+            `;
+          }
+          
+          return `
+            <div class="notification-item ${unreadClass}">
+              <div class="notification-header">
+                <span class="notification-user">群组 #${notif.groupId}</span>
+                <span class="notification-time">${timeStr}</span>
+              </div>
+              <div class="notification-message">${notif.message}</div>
+              ${actionsHtml}
+            </div>
+          `;
+        }).join('');
+        
+      } catch (error) {
+        console.error('加载群聊通知失败:', error);
+      }
+    }
+
+    // 响应好友请求
+    async function respondToFriendRequest(notificationId, accepted) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/friends/notifications/${notificationId}/respond`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accepted })
+        });
+        
+        if (response.ok) {
+          loadFriendNotifications();
+        }
+      } catch (error) {
+        console.error('处理好友请求失败:', error);
+      }
+    }
+
+    // 响应群组请求
+    async function respondToGroupRequest(notificationId, approved) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/groups/notifications/${notificationId}/approve`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            operatorId: currentUser.id,
+            approved 
+          })
+        });
+        
+        if (response.ok) {
+          loadGroupNotifications();
+        }
+      } catch (error) {
+        console.error('处理群组请求失败:', error);
+      }
+    }
+
+    // 初始加载
+    loadFriendNotifications();
+    loadGroupNotifications();
+
+    // 定时刷新
+    setInterval(() => {
+      loadFriendNotifications();
+      loadGroupNotifications();
+    }, 30000);
+  </script>
+</body>
+</html>

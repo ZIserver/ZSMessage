@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智穗语聊 - 登录</title>
+  <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      background: linear-gradient(135deg, #e8f4fc 0%, #d4ecfb 30%, #c5e5f9 60%, #b8dff7 100%);
+      position: relative;
+    }
+    
+    /* 装饰性圆形背景 */
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 80%;
+      height: 150%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -10%;
+      width: 60%;
+      height: 100%;
+      background: radial-gradient(ellipse, rgba(135,206,250,0.3) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* 标题栏 */
+    .titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 36px;
+      background: transparent;
+      -webkit-app-region: drag;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      padding: 0 8px;
+    }
+    
+    .titlebar-btns {
+      display: flex;
+      gap: 4px;
+      -webkit-app-region: no-drag;
+    }
+    
+    .titlebar-btn {
+      width: 36px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: rgba(0, 120, 200, 0.7);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    
+    .titlebar-btn:hover {
+      background: rgba(255, 255, 255, 0.5);
+      color: #0078c8;
+    }
+    
+    .titlebar-btn-close:hover {
+      background: rgba(232, 17, 35, 0.9);
+      color: #fff;
+    }
+
+    /* 登录容器 */
+    .login-container {
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 头像区域 */
+    .avatar-section {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .avatar-wrapper {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fff 0%, #f0f8ff 100%);
+      box-shadow: 0 4px 20px rgba(0, 120, 200, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .avatar-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .avatar-wrapper .avatar-icon {
+      font-size: 40px;
+      color: #5bc0de;
+    }
+
+    /* 表单区域 */
+    .form-wrapper {
+      width: 280px;
+    }
+
+    /* 输入框组 */
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    
+    .input-group input {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-bottom: 1px solid rgba(0, 120, 200, 0.2);
+      background: transparent;
+      font-size: 15px;
+      color: #333;
+      padding: 0 30px 0 8px;
+      outline: none;
+      transition: all 0.3s;
+    }
+    
+    .input-group input::placeholder {
+      color: #aaa;
+    }
+    
+    .input-group input:focus {
+      border-bottom-color: #12b7f5;
+    }
+    
+    .input-group .input-icon {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #bbb;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .input-group .input-icon:hover {
+      color: #12b7f5;
+    }
+
+    /* 选项区域 */
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 16px 0 24px;
+    }
+    
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #666;
+    }
+    
+    .checkbox-item input[type="checkbox"] {
+      display: none;
+    }
+    
+    .checkbox-item .checkmark {
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid #12b7f5;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .checkbox-item input:checked + .checkmark {
+      background: #12b7f5;
+    }
+    
+    .checkbox-item input:checked + .checkmark::after {
+      content: '✓';
+      color: #fff;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    /* 登录按钮 */
+    .login-btn {
+      width: 100%;
+      height: 44px;
+      border: none;
+      border-radius: 22px;
+      background: linear-gradient(90deg, #12b7f5 0%, #09a3e8 50%, #0095dd 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(18, 183, 245, 0.4);
+      letter-spacing: 2px;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(18, 183, 245, 0.5);
+    }
+    
+    .login-btn:active {
+      transform: translateY(0);
+    }
+    
+    .login-btn:disabled {
+      background: linear-gradient(90deg, #a0d8ef 0%, #8ecae6 100%);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 协议区域 */
+    .agreement-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #999;
+    }
+    
+    .agreement-row a {
+      color: #12b7f5;
+      text-decoration: none;
+    }
+    
+    .agreement-row a:hover {
+      text-decoration: underline;
+    }
+
+    /* 底部链接 */
+    .bottom-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      font-size: 13px;
+    }
+    
+    .bottom-links a {
+      color: #12b7f5;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .bottom-links a:hover {
+      color: #0095dd;
+    }
+    
+    .bottom-links .divider {
+      color: #ccc;
+    }
+
+    /* 验证码容器 */
+    #captcha-container {
+      margin: 16px 0;
+    }
+    
+    #captcha-container .captcha-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    #captcha-container img {
+      height: 40px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid rgba(0, 120, 200, 0.2);
+    }
+    
+    #captcha-container input {
+      flex: 1;
+      height: 40px;
+      border: none;
+      border-bottom: 1px solid rgba(0, 120, 200, 0.2);
+      background: transparent;
+      font-size: 14px;
+      padding: 0 8px;
+      outline: none;
+    }
+    
+    #captcha-container input:focus {
+      border-bottom-color: #12b7f5;
+    }
+
+    /* 状态消息 */
+    .status-message {
+      margin-top: 16px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 13px;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .status-message.error {
+      background: rgba(255, 77, 79, 0.1);
+      color: #ff4d4f;
+      border: 1px solid rgba(255, 77, 79, 0.3);
+    }
+    
+    .status-message.success {
+      background: rgba(82, 196, 26, 0.1);
+      color: #52c41a;
+      border: 1px solid rgba(82, 196, 26, 0.3);
+    }
+    
+    .status-message.show {
+      display: block;
+    }
+
+    /* 注册面板 */
+    .form-panel {
+      display: none;
+    }
+    
+    .form-panel.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* 注册表单特殊样式 */
+    .register-panel .input-group {
+      margin-bottom: 16px;
+    }
+    
+    .sms-row {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .sms-row input {
+      flex: 1;
+    }
+    
+    .sms-btn {
+      height: 44px;
+      padding: 0 16px;
+      border: 1px solid #12b7f5;
+      border-radius: 4px;
+      background: transparent;
+      color: #12b7f5;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    
+    .sms-btn:hover {
+      background: rgba(18, 183, 245, 0.1);
+    }
+    
+    .sms-btn:disabled {
+      border-color: #ccc;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    /* 表单切换标签 */
+    .form-tabs {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 标题栏 -->
+  <div class="titlebar">
+    <div class="titlebar-btns">
+      <button class="titlebar-btn" id="btn-menu" title="菜单">
+        <i class="fas fa-bars"></i>
+      </button>
+      <button class="titlebar-btn" id="btn-min" title="最小化">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button class="titlebar-btn titlebar-btn-close" id="btn-close" title="关闭">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="login-container">
+    <!-- 登录面板 -->
+    <div class="form-panel active" id="login-panel">
+      <!-- 头像区域 -->
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <i class="fas fa-user avatar-icon"></i>
+        </div>
+      </div>
+      
+      <!-- 表单 -->
+      <div class="form-wrapper">
+        <form id="login-form">
+          <div class="input-group">
+            <input type="text" id="login-username" placeholder="智穗号" autocomplete="username">
+            <i class="fas fa-caret-down input-icon"></i>
+          </div>
+          <div class="input-group">
+            <input type="password" id="login-password" placeholder="密码" autocomplete="current-password">
+            <i class="fas fa-keyboard input-icon" id="toggle-password"></i>
+          </div>
+          
+          <!-- 图片验证码 -->
+          <div id="captcha-container" style="display: none;">
+            <div class="captcha-row">
+              <img id="captcha-image" title="点击刷新" />
+              <input type="text" id="captcha-code" placeholder="验证码" maxlength="4" />
+            </div>
+          </div>
+          
+          <div class="options-row">
+            <label class="checkbox-item">
+              <input type="checkbox" id="auto-login">
+              <span class="checkmark"></span>
+              <span>自动登录</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" id="remember-pwd" checked>
+              <span class="checkmark"></span>
+              <span>记住密码</span>
+            </label>
+          </div>
+          
+          <button type="submit" class="login-btn">登 录</button>
+        </form>
+        
+        <div class="status-message" id="login-status"></div>
+        
+        <div class="agreement-row">
+          <label class="checkbox-item" style="font-size: 12px;">
+            <input type="checkbox" id="agree-terms" checked>
+            <span class="checkmark" style="width: 14px; height: 14px;"></span>
+          </label>
+          <span>已阅读并同意</span>
+          <a href="#">服务协议</a>
+          <span>和</span>
+          <a href="#">隐私保护指引</a>
+        </div>
+        
+        <div class="bottom-links">
+          <a href="#" id="link-qr">扫码登录</a>
+          <span class="divider">|</span>
+          <a href="#" id="link-register">注册账号</a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 注册面板 -->
+    <div class="form-panel register-panel" id="register-panel">
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <i class="fas fa-user-plus avatar-icon"></i>
+        </div>
+      </div>
+      
+      <div class="form-wrapper">
+        <form id="register-form">
+          <div class="input-group">
+            <input type="text" id="register-username" placeholder="用户名" required>
+          </div>
+          <div class="input-group">
+            <input type="text" id="register-nickname" placeholder="昵称" required>
+          </div>
+          <div class="input-group">
+            <input type="tel" id="register-phone" placeholder="手机号" required pattern="^1[3-9]\d{9}$">
+          </div>
+          <div class="input-group">
+            <div class="sms-row">
+              <input type="text" id="register-code" placeholder="短信验证码" required>
+              <button type="button" id="send-code-btn" class="sms-btn">获取验证码</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <input type="password" id="register-password" placeholder="密码（至少6位）" required>
+          </div>
+          <div class="input-group">
+            <input type="password" id="register-confirm" placeholder="确认密码" required>
+          </div>
+          <button type="submit" class="login-btn">注 册</button>
+        </form>
+        
+        <div class="status-message" id="register-status"></div>
+        
+        <div class="bottom-links">
+          <a href="#" id="link-login">返回登录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiService = require('../services/api');
+    const { ipcRenderer } = require('electron');
+
+    // ========== 标题栏窗口控制 ==========
+    document.getElementById('btn-min').addEventListener('click', () => {
+      ipcRenderer.send('window-minimize');
+    });
+    
+    document.getElementById('btn-close').addEventListener('click', () => {
+      ipcRenderer.send('window-close');
+    });
+
+    // Check if already logged in
+    if (apiService.isAuthenticated()) {
+      console.log('[Login] User already logged in, redirecting...');
+      ipcRenderer.send('restore-window');
+      window.location.href = 'chat.html';
+    }
+
+    // 面板切换
+    document.getElementById('link-register').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('login-panel').classList.remove('active');
+      document.getElementById('register-panel').classList.add('active');
+    });
+    
+    document.getElementById('link-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('register-panel').classList.remove('active');
+      document.getElementById('login-panel').classList.add('active');
+    });
+    
+    // 密码显示切换
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const pwdInput = document.getElementById('login-password');
+      const icon = document.getElementById('toggle-password');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.classList.remove('fa-keyboard');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        pwdInput.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-keyboard');
+      }
+    });
+    
+    // 动态头像更新
+    const avatarWrapper = document.querySelector('#login-panel .avatar-wrapper');
+    const avatarIcon = document.querySelector('#login-panel .avatar-icon');
+    const smartCodeInput = document.getElementById('login-username');
+    
+    smartCodeInput.addEventListener('input', async (e) => {
+      const smartCode = e.target.value.trim();
+      
+      if (smartCode) {
+        try {
+          // 尝试从服务器获取头像
+          const response = await apiService.getUserBySmartCode(smartCode);
+          if (response.success && response.data && response.data.avatar) {
+            // 有头像，显示头像
+            // 构建完整的头像URL
+            let avatarSrc = response.data.avatar;
+            if (avatarSrc.startsWith('/api/avatars/')) {
+              avatarSrc = 'https://msg.v2.zhsdev.top' + avatarSrc;
+            }
+            avatarWrapper.innerHTML = `<img src="${avatarSrc}" alt="头像" />`;
+          } else {
+            // 没有头像，显示首字母头像
+            const firstChar = smartCode.charAt(0).toUpperCase();
+            avatarWrapper.innerHTML = `<div class="avatar-initial" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #5bc0de; color: white; font-size: 32px; border-radius: 50%;">${firstChar}</div>`;
+          }
+        } catch (error) {
+          // 请求失败，显示首字母头像
+          const firstChar = smartCode.charAt(0).toUpperCase();
+          avatarWrapper.innerHTML = `<div class="avatar-initial" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #5bc0de; color: white; font-size: 32px; border-radius: 50%;">${firstChar}</div>`;
+        }
+      } else {
+        // 输入为空，恢复默认头像
+        avatarWrapper.innerHTML = `<i class="fas fa-user avatar-icon"></i>`;
+      }
+    });
+    
+    // 输入框焦点事件
+    smartCodeInput.addEventListener('focus', () => {
+      if (!smartCodeInput.value.trim()) {
+        avatarWrapper.innerHTML = `<i class="fas fa-user avatar-icon"></i>`;
+      }
+    });
+
+    // 显示状态消息
+    function showStatus(elementId, message, isError = false) {
+      const statusEl = document.getElementById(elementId);
+      statusEl.textContent = message;
+      statusEl.className = `status-message show ${isError ? 'error' : 'success'}`;
+      
+      setTimeout(() => {
+        statusEl.classList.remove('show');
+      }, 3000);
+    }
+
+    // 登录表单提交
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      if (!username || !password) {
+        showStatus('login-status', '请填写完整信息', true);
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '登录中...';
+
+      // 直接登录，后端会返回是否需要验证码
+      await performLogin(username, password, null, submitBtn);
+    });
+    
+    // 显示图片验证码
+    let currentCaptchaId = null;
+    
+    async function showImageCaptcha(username, password, submitBtn) {
+      const container = document.getElementById('captcha-container');
+      const captchaImage = document.getElementById('captcha-image');
+      const captchaCodeInput = document.getElementById('captcha-code');
+      
+      container.style.display = 'block';
+      captchaCodeInput.value = '';
+      
+      // 获取验证码
+      const result = await apiService.getCaptcha();
+      if (result.success) {
+        currentCaptchaId = result.captchaId;
+        captchaImage.src = result.captchaImage;
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登 录';
+        captchaCodeInput.focus();
+      } else {
+        showStatus('login-status', result.error || '获取验证码失败', true);
+        submitBtn.disabled = false;
+        submitBtn.textContent = '登 录';
+      }
+      
+      // 点击图片刷新验证码
+      captchaImage.onclick = async () => {
+        const refreshResult = await apiService.getCaptcha();
+        if (refreshResult.success) {
+          currentCaptchaId = refreshResult.captchaId;
+          captchaImage.src = refreshResult.captchaImage;
+          captchaCodeInput.value = '';
+          captchaCodeInput.focus();
+        }
+      };
+    }
+    
+    // 执行登录
+    async function performLogin(username, password, captchaData, submitBtn) {
+      // 如果显示了验证码但没有填写，提示用户
+      const container = document.getElementById('captcha-container');
+      const captchaCodeInput = document.getElementById('captcha-code');
+      
+      if (container.style.display !== 'none' && !captchaData) {
+        const code = captchaCodeInput.value.trim();
+        if (!code) {
+          showStatus('login-status', '请输入验证码', true);
+          submitBtn.disabled = false;
+          submitBtn.textContent = '登 录';
+          return;
+        }
+        captchaData = {
+          captchaId: currentCaptchaId,
+          captchaCode: code
+        };
+      }
+      
+      const result = await apiService.login(username, password, captchaData);
+      
+      // 检查是否需要验证码（403响应）
+      if (result.needsCaptcha) {
+        submitBtn.textContent = '请完成验证';
+        showImageCaptcha(username, password, submitBtn);
+        return;
+      }
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = '登 录';
+
+      if (result.success) {
+        showStatus('login-status', '登录成功！', false);
+        console.log('[Login] Login successful, auth saved to localStorage');
+        
+        // 启动OAuth本地验证服务器
+        ipcRenderer.send('start-oauth-server', {
+          id: result.data.userId,
+          username: result.data.username,
+          nickname: result.data.nickname || result.data.username,
+          avatar: result.data.avatar || null
+        });
+        console.log('[OAuth] 已发送启动OAuth服务器请求');
+        
+        // 通知主进程恢复窗口
+        ipcRenderer.send('restore-window');
+        setTimeout(() => {
+          window.location.href = 'chat.html';
+        }, 500);
+      } else {
+        showStatus('login-status', result.error || '登录失败', true);
+        // 如果登录失败，隐藏验证码容器
+        document.getElementById('captcha-container').style.display = 'none';
+      }
+    }
+
+    // 注册表单提交
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('register-username').value.trim();
+      const nickname = document.getElementById('register-nickname').value.trim();
+      const phone = document.getElementById('register-phone').value.trim();
+      const smsCode = document.getElementById('register-code').value.trim();
+      const password = document.getElementById('register-password').value.trim();
+      const confirm = document.getElementById('register-confirm').value.trim();
+
+      if (!username || !nickname || !phone || !smsCode || !password || !confirm) {
+        showStatus('register-status', '请填写完整信息', true);
+        return;
+      }
+      
+      // 验证手机号格式
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        showStatus('register-status', '请输入正确的手机号', true);
+        return;
+      }
+
+      if (password.length < 6) {
+        showStatus('register-status', '密码至少需要6位', true);
+        return;
+      }
+
+      if (password !== confirm) {
+        showStatus('register-status', '两次密码输入不一致', true);
+        return;
+      }
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '注册中...';
+
+      const result = await apiService.register(username, password, nickname, phone, smsCode);
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = '注 册';
+
+      if (result.success) {
+        showStatus('register-status', '注册成功！正在跳转...', false);
+        console.log('[Register] Registration successful, auth saved to localStorage');
+        
+        // 启动OAuth本地验证服务器
+        ipcRenderer.send('start-oauth-server', {
+          id: result.data.userId,
+          username: result.data.username,
+          nickname: result.data.nickname || result.data.username,
+          avatar: result.data.avatar || null
+        });
+        console.log('[OAuth] 已发送启动OAuth服务器请求');
+        
+        // 通知主进程恢复窗口
+        ipcRenderer.send('restore-window');
+        setTimeout(() => {
+          window.location.href = 'chat.html';
+        }, 1000);
+      } else {
+        showStatus('register-status', result.error || '注册失败', true);
+      }
+    });
+    
+    // 发送短信验证码
+    let countdown = 0;
+    document.getElementById('send-code-btn').addEventListener('click', async () => {
+      if (countdown > 0) return;
+      
+      const phone = document.getElementById('register-phone').value.trim();
+      if (!phone) {
+        showStatus('register-status', '请先输入手机号', true);
+        return;
+      }
+      
+      // 验证手机号格式
+      if (!/^1[3-9]\d{9}$/.test(phone)) {
+        showStatus('register-status', '请输入正确的手机号', true);
+        return;
+      }
+      
+      const btn = document.getElementById('send-code-btn');
+      btn.disabled = true;
+      btn.textContent = '发送中...';
+      
+      const result = await apiService.sendSmsCode(phone);
+      
+      if (result.success) {
+        showStatus('register-status', '验证码已发送，请注意查收短信', false);
+        
+        // 倒计时60秒
+        countdown = 60;
+        const timer = setInterval(() => {
+          countdown--;
+          if (countdown > 0) {
+            btn.textContent = `${countdown}秒后重试`;
+          } else {
+            btn.disabled = false;
+            btn.textContent = '获取验证码';
+            clearInterval(timer);
+          }
+        }, 1000);
+      } else {
+        btn.disabled = false;
+        btn.textContent = '获取验证码';
+        showStatus('register-status', result.error || '发送验证码失败', true);
+      }
+    });
+  </script>
+  <script>
+    // 应用默认主题颜色
+    document.documentElement.style.setProperty('--primary-color', '#0078D4');
+    document.documentElement.style.setProperty('--primary-hover', '#005a9e');
+  </script>
+</body>
+</html>

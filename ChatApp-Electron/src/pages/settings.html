@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置 - 智穗语聊</title>
+    <link rel="stylesheet" href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../styles/common.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .settings-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .settings-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .settings-content {
+            padding: 30px;
+        }
+
+        .setting-section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .setting-section:last-child {
+            border-bottom: none;
+        }
+
+        .setting-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .setting-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .setting-label {
+            font-size: 15px;
+            color: #555;
+        }
+
+        .theme-colors {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.active {
+            border-color: #333;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .version-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .version-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .version-info-label {
+            color: #666;
+        }
+
+        .version-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .update-status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .update-status.checking {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .update-status.latest {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .update-status.available {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #f5f5f5;
+            transform: scale(1.1);
+        }
+
+        /* 开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 1;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+
+    <div class="settings-container">
+        <div class="settings-header">
+            <h1>⚙️ 设置</h1>
+        </div>
+
+        <div class="settings-content">
+            <!-- 主题设置 -->
+            <div class="setting-section">
+                <div class="setting-title">🎨 主题颜色</div>
+                <div class="theme-colors">
+                    <div class="color-option active" data-color="#667eea" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                    <div class="color-option" data-color="#00b4d8" style="background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%);"></div>
+                    <div class="color-option" data-color="#f72585" style="background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);"></div>
+                    <div class="color-option" data-color="#ff6d00" style="background: linear-gradient(135deg, #ff6d00 0%, #ff9500 100%);"></div>
+                    <div class="color-option" data-color="#06d6a0" style="background: linear-gradient(135deg, #06d6a0 0%, #00a896 100%);"></div>
+                    <div class="color-option" data-color="#7209b7" style="background: linear-gradient(135deg, #7209b7 0%, #560bad 100%);"></div>
+                </div>
+            </div>
+
+            <!-- 应用设置 -->
+            <div class="setting-section">
+                <div class="setting-title">⚙️ 应用设置</div>
+                <div class="setting-item">
+                    <span class="setting-label">开机自启动</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoLaunchToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="margin-top: 10px; font-size: 13px; color: #666;">
+                    <span id="autoLaunchStatus">当前状态：加载中...</span>
+                </div>
+            </div>
+
+            <!-- 通知设置 -->
+            <div class="setting-section">
+                <div class="setting-title">🔔 通知设置</div>
+                <div class="setting-item">
+                    <span class="setting-label">消息通知</span>
+                    <label class="switch">
+                        <input type="checkbox" id="messageNotificationToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="margin-top: 5px; margin-bottom: 20px; font-size: 13px; color: #999;">
+                    收到新消息时显示桌面通知
+                </div>
+                
+                <div class="setting-item">
+                    <span class="setting-label">声音通知</span>
+                    <label class="switch">
+                        <input type="checkbox" id="soundNotificationToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="margin-top: 5px; font-size: 13px; color: #999;">
+                    收到新消息时播放提示音
+                </div>
+            </div>
+
+            <!-- 快捷键设置 -->
+            <div class="setting-section">
+                <div class="setting-title">⌨️ 快捷键设置</div>
+                <div class="setting-item">
+                    <span class="setting-label">发送快捷键</span>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <select id="sendShortcut" class="select-input" style="padding: 8px 16px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                            <option value="Enter">Enter键</option>
+                            <option value="Ctrl+Enter">Ctrl + Enter</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 5px; font-size: 13px; color: #999;">
+                    选择您喜欢的发送消息快捷键
+                </div>
+            </div>
+
+            <!-- 在线更新 -->
+            <div class="setting-section">
+                <div class="setting-title">🚀 在线更新</div>
+                <div class="setting-item">
+                    <span class="setting-label">检查更新</span>
+                    <button class="btn btn-primary" onclick="checkForUpdates()">立即检查</button>
+                </div>
+                <div id="updateStatus" class="update-status" style="display: none;"></div>
+            </div>
+
+            <!-- 关于APP -->
+            <div class="setting-section">
+                <div class="setting-title">ℹ️ 关于智穗语聊</div>
+                <div class="version-info">
+                    <div class="version-info-item">
+                        <span class="version-info-label">应用名称</span>
+                        <span class="version-info-value">智穗语聊 (ZSMessage)</span>
+                    </div>
+                    <div class="version-info-item">
+                        <span class="version-info-label">当前版本</span>
+                        <span class="version-info-value" id="currentVersion">加载中...</span>
+                    </div>
+                    <div class="version-info-item">
+                        <span class="version-info-label">Electron 版本</span>
+                        <span class="version-info-value" id="electronVersion">加载中...</span>
+                    </div>
+                    <div class="version-info-item">
+                        <span class="version-info-label">Node 版本</span>
+                        <span class="version-info-value" id="nodeVersion">加载中...</span>
+                    </div>
+                    <div class="version-info-item">
+                        <span class="version-info-label">Chrome 版本</span>
+                        <span class="version-info-value" id="chromeVersion">加载中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/settings.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+2026-01-17 11:00:11.906 [background-preinit] INFO  [] [] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-17 11:00:11.955 [main] INFO  [] [] com.chatapp.ChatApplication - Starting ChatApplication v1.0.0 using Java 21.0.6 with PID 37500 (D:\Desktop\ZSMessage\ChatApp-Backend\target\chat-server-1.0.0.jar started by q1122 in D:\Desktop\ZSMessage\chatapp-admin-vue)
+2026-01-17 11:00:11.956 [main] INFO  [] [] com.chatapp.ChatApplication - No active profile set, falling back to 1 default profile: "default"
+2026-01-17 11:00:12.762 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17 11:00:12.864 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 95 ms. Found 20 JPA repository interfaces.
+2026-01-17 11:00:13.606 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-01-17 11:00:13.617 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:00:13.621 [main] INFO  [] [] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-17 11:00:13.621 [main] INFO  [] [] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.15]
+2026-01-17 11:00:13.706 [main] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-17 11:00:13.706 [main] INFO  [] [] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1692 ms
+2026-01-17 11:00:13.883 [main] INFO  [] [] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17 11:00:13.972 [main] INFO  [] [] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.13.Final
+2026-01-17 11:00:13.975 [main] INFO  [] [] org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2026-01-17 11:00:14.231 [main] INFO  [] [] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17 11:00:14.254 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-17 11:00:14.525 [main] INFO  [] [] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2a27cb34
+2026-01-17 11:00:14.528 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-17 11:00:14.601 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17 11:00:14.603 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-01-17 11:00:15.498 [main] INFO  [] [] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17 11:00:15.892 [main] INFO  [] [] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17 11:00:16.309 [main] INFO  [] [] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17 11:00:17.180 [main] WARN  [] [] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17 11:00:17.199 [main] WARN  [] [] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 68431e1f-6067-4bb7-b216-a3809b77f10b
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-17 11:00:17.498 [main] INFO  [] [] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@170937fe, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@623be2a0, org.springframework.security.web.context.SecurityContextHolderFilter@29682244, org.springframework.security.web.header.HeaderWriterFilter@66c91224, org.springframework.web.filter.CorsFilter@3b44ed3c, org.springframework.security.web.authentication.logout.LogoutFilter@32eeef08, com.chatapp.config.AdminAuthFilter@2102a4d5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2e76ade9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@12a8d03b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1df83569, org.springframework.security.web.session.SessionManagementFilter@4bca2a09, org.springframework.security.web.access.ExceptionTranslationFilter@4fcb796f, org.springframework.security.web.access.intercept.AuthorizationFilter@6202f8bf]
+2026-01-17 11:00:17.715 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:00:17.741 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-17 11:00:17.743 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-01-17 11:00:17.744 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@67201eeb]]
+2026-01-17 11:00:17.744 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-01-17 11:00:17.762 [main] INFO  [] [] com.chatapp.ChatApplication - Started ChatApplication in 6.353 seconds (process running for 6.907)
+2026-01-17 11:00:35.061 [http-nio-8080-exec-1] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17 11:00:35.062 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-17 11:00:35.062 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Completed initialization in 0 ms
+2026-01-17 11:01:17.544 [MessageBroker-1] INFO  [] [] o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-01-17 11:05:55.776 [background-preinit] INFO  [] [] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-17 11:05:55.827 [main] INFO  [] [] com.chatapp.ChatApplication - Starting ChatApplication v1.0.0 using Java 21.0.6 with PID 22236 (D:\Desktop\ZSMessage\ChatApp-Backend\target\chat-server-1.0.0.jar started by q1122 in D:\Desktop\ZSMessage\chatapp-admin-vue)
+2026-01-17 11:05:55.831 [main] INFO  [] [] com.chatapp.ChatApplication - No active profile set, falling back to 1 default profile: "default"
+2026-01-17 11:05:56.562 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17 11:05:56.659 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 90 ms. Found 20 JPA repository interfaces.
+2026-01-17 11:05:57.333 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-01-17 11:05:57.343 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:05:57.346 [main] INFO  [] [] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-17 11:05:57.346 [main] INFO  [] [] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.15]
+2026-01-17 11:05:57.419 [main] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-17 11:05:57.419 [main] INFO  [] [] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1536 ms
+2026-01-17 11:05:57.582 [main] INFO  [] [] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17 11:05:57.648 [main] INFO  [] [] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.13.Final
+2026-01-17 11:05:57.652 [main] INFO  [] [] org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2026-01-17 11:05:57.914 [main] INFO  [] [] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17 11:05:57.935 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-17 11:05:58.075 [main] INFO  [] [] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4a6c18ad
+2026-01-17 11:05:58.076 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-17 11:05:58.107 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17 11:05:58.108 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-01-17 11:05:59.037 [main] INFO  [] [] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17 11:05:59.083 [main] INFO  [] [] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17 11:05:59.556 [main] INFO  [] [] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17 11:06:00.436 [main] WARN  [] [] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17 11:06:00.456 [main] WARN  [] [] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 54d45f56-98c7-401b-b891-27a6bf4e255a
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-17 11:06:00.729 [main] INFO  [] [] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@53630682, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@71e2ddd, org.springframework.security.web.context.SecurityContextHolderFilter@6e669b5c, org.springframework.security.web.header.HeaderWriterFilter@76cad511, org.springframework.web.filter.CorsFilter@8318808, org.springframework.security.web.authentication.logout.LogoutFilter@7fae6f43, com.chatapp.config.AdminAuthFilter@3d4d3fe7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@125c03d3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@24f8707c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@b97f195, org.springframework.security.web.session.SessionManagementFilter@6c502018, org.springframework.security.web.access.ExceptionTranslationFilter@65192f16, org.springframework.security.web.access.intercept.AuthorizationFilter@12a8d03b]
+2026-01-17 11:06:00.953 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:06:00.974 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-17 11:06:00.975 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-01-17 11:06:00.976 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@381d7c4c]]
+2026-01-17 11:06:00.976 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-01-17 11:06:00.989 [main] INFO  [] [] com.chatapp.ChatApplication - Started ChatApplication in 5.687 seconds (process running for 6.151)
+2026-01-17 11:06:21.028 [http-nio-8080-exec-1] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17 11:06:21.028 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-17 11:06:21.029 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-01-17 11:07:00.789 [MessageBroker-1] INFO  [] [] o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-01-17 11:07:47.020 [background-preinit] INFO  [] [] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-17 11:07:47.053 [main] INFO  [] [] com.chatapp.ChatApplication - Starting ChatApplication v1.0.0 using Java 21.0.6 with PID 38600 (D:\Desktop\ZSMessage\ChatApp-Backend\target\chat-server-1.0.0.jar started by q1122 in D:\Desktop\ZSMessage\chatapp-admin-vue)
+2026-01-17 11:07:47.054 [main] INFO  [] [] com.chatapp.ChatApplication - No active profile set, falling back to 1 default profile: "default"
+2026-01-17 11:07:47.803 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17 11:07:47.898 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 86 ms. Found 20 JPA repository interfaces.
+2026-01-17 11:07:48.601 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-01-17 11:07:48.612 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:07:48.613 [main] INFO  [] [] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-17 11:07:48.613 [main] INFO  [] [] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.15]
+2026-01-17 11:07:48.702 [main] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-17 11:07:48.704 [main] INFO  [] [] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1606 ms
+2026-01-17 11:07:48.875 [main] INFO  [] [] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17 11:07:48.978 [main] INFO  [] [] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.13.Final
+2026-01-17 11:07:48.982 [main] INFO  [] [] org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2026-01-17 11:07:49.219 [main] INFO  [] [] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17 11:07:49.241 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-17 11:07:49.377 [main] INFO  [] [] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4a6c18ad
+2026-01-17 11:07:49.379 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-17 11:07:49.414 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17 11:07:49.415 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-01-17 11:07:50.387 [main] INFO  [] [] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17 11:07:50.443 [main] INFO  [] [] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17 11:07:50.941 [main] INFO  [] [] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17 11:07:51.775 [main] WARN  [] [] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17 11:07:51.793 [main] WARN  [] [] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: f83b635d-c496-4440-a715-2bc6a3cc92a7
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-17 11:07:52.131 [main] INFO  [] [] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@53630682, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@71e2ddd, org.springframework.security.web.context.SecurityContextHolderFilter@6e669b5c, org.springframework.security.web.header.HeaderWriterFilter@76cad511, org.springframework.web.filter.CorsFilter@8318808, org.springframework.security.web.authentication.logout.LogoutFilter@7fae6f43, com.chatapp.config.AdminAuthFilter@3d4d3fe7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@125c03d3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@24f8707c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@b97f195, org.springframework.security.web.session.SessionManagementFilter@6c502018, org.springframework.security.web.access.ExceptionTranslationFilter@65192f16, org.springframework.security.web.access.intercept.AuthorizationFilter@12a8d03b]
+2026-01-17 11:07:52.341 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:07:52.366 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-17 11:07:52.367 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-01-17 11:07:52.368 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@381d7c4c]]
+2026-01-17 11:07:52.368 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-01-17 11:07:52.382 [main] INFO  [] [] com.chatapp.ChatApplication - Started ChatApplication in 5.85 seconds (process running for 6.292)
+2026-01-17 11:08:52.171 [MessageBroker-1] INFO  [] [] o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-01-17 11:09:15.155 [http-nio-8080-exec-1] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17 11:09:15.156 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-17 11:09:15.158 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-01-17 11:11:15.350 [background-preinit] INFO  [] [] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-01-17 11:11:15.389 [main] INFO  [] [] com.chatapp.ChatApplication - Starting ChatApplication v1.0.0 using Java 21.0.6 with PID 21156 (D:\Desktop\ZSMessage\ChatApp-Backend\target\chat-server-1.0.0.jar started by q1122 in D:\Desktop\ZSMessage\chatapp-admin-vue)
+2026-01-17 11:11:15.390 [main] INFO  [] [] com.chatapp.ChatApplication - No active profile set, falling back to 1 default profile: "default"
+2026-01-17 11:11:16.158 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-17 11:11:16.275 [main] INFO  [] [] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 108 ms. Found 20 JPA repository interfaces.
+2026-01-17 11:11:16.960 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2026-01-17 11:11:16.969 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:11:16.972 [main] INFO  [] [] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-01-17 11:11:16.972 [main] INFO  [] [] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.15]
+2026-01-17 11:11:17.056 [main] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-01-17 11:11:17.056 [main] INFO  [] [] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1616 ms
+2026-01-17 11:11:17.241 [main] INFO  [] [] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-17 11:11:17.315 [main] INFO  [] [] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.2.13.Final
+2026-01-17 11:11:17.319 [main] INFO  [] [] org.hibernate.cfg.Environment - HHH000406: Using bytecode reflection optimizer
+2026-01-17 11:11:17.600 [main] INFO  [] [] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-01-17 11:11:17.620 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-01-17 11:11:17.764 [main] INFO  [] [] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4a6c18ad
+2026-01-17 11:11:17.767 [main] INFO  [] [] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-01-17 11:11:17.796 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-01-17 11:11:17.797 [main] WARN  [] [] org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2026-01-17 11:11:18.683 [main] INFO  [] [] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-01-17 11:11:18.728 [main] INFO  [] [] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-17 11:11:19.209 [main] INFO  [] [] o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-01-17 11:11:20.079 [main] WARN  [] [] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-17 11:11:20.096 [main] WARN  [] [] o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 221bc4d4-7274-469f-9cce-75382a88ae59
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-01-17 11:11:20.379 [main] INFO  [] [] o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@53630682, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@71e2ddd, org.springframework.security.web.context.SecurityContextHolderFilter@6e669b5c, org.springframework.security.web.header.HeaderWriterFilter@76cad511, org.springframework.web.filter.CorsFilter@8318808, org.springframework.security.web.authentication.logout.LogoutFilter@7fae6f43, com.chatapp.config.AdminAuthFilter@3d4d3fe7, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@125c03d3, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@24f8707c, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@b97f195, org.springframework.security.web.session.SessionManagementFilter@6c502018, org.springframework.security.web.access.ExceptionTranslationFilter@65192f16, org.springframework.security.web.access.intercept.AuthorizationFilter@12a8d03b]
+2026-01-17 11:11:20.611 [main] INFO  [] [] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-01-17 11:11:20.632 [main] INFO  [] [] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-17 11:11:20.633 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-01-17 11:11:20.634 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@381d7c4c]]
+2026-01-17 11:11:20.634 [main] INFO  [] [] o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-01-17 11:11:20.647 [main] INFO  [] [] com.chatapp.ChatApplication - Started ChatApplication in 5.766 seconds (process running for 6.247)
+2026-01-17 11:11:24.185 [http-nio-8080-exec-1] INFO  [] [] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-17 11:11:24.187 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-01-17 11:11:24.188 [http-nio-8080-exec-1] INFO  [] [] o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-01-17 11:12:20.424 [MessageBroker-1] INFO  [] [] o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], outboundChannel[pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 0], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
